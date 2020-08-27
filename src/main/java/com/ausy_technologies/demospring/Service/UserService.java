@@ -7,6 +7,7 @@ import com.ausy_technologies.demospring.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.Query;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,23 +22,16 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
 
-
     public Role saveRole(Role role) {
-
-
         return this.roleRepository.save(role);
     }
 
-
     public User saveUser(User user) {
-
-
         return this.userRepository.save(user);
     }
 
     public User saveUser2(User user ,int idRole)
     {
-
        Role role= this.roleRepository.findById(idRole).get();
 
        List<Role> roleList =new ArrayList<>();
@@ -52,24 +46,17 @@ public class UserService {
        {
            throw new RuntimeException("Role not found");
        }
-
-
     }
-
 
     public User saveUser3(  User user ,List<Role> roleList)
     {
         user.setRoleList(roleList);
         return this.userRepository.save(user);
-
     }
-
-
 
     public Role findRoleById(int id)
     {
         return this.roleRepository.findById(id).get();
-
     }
 
     public List<Role> findAllRoles()
@@ -77,12 +64,10 @@ public class UserService {
         return this.roleRepository.findAll();
     }
 
-
     public List<User> findAllUsers()
     {
         return this.userRepository.findAll();
     }
-
 
     public void deleteUserById(int id)
     {
@@ -101,5 +86,12 @@ public class UserService {
         }
     }
 
+    public void updateUserName(String firstname, String lastname, int id){
+        userRepository.updateUserName(firstname, lastname, id);
+    }
+
+    public void updateUserPassword(String password, int id){
+        userRepository.updateUserPassword(password, id);
+    }
 
 }
