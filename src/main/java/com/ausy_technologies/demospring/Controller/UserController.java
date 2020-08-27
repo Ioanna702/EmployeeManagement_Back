@@ -35,7 +35,7 @@ public class UserController {
     public ResponseEntity<User> addUsers (@RequestBody User user){
         User newUser = this.userService.saveUser(user);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Custom-Header","addUser");
+        httpHeaders.add("Custom-Header","Add User");
         return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(newUser);
     }
 
@@ -82,20 +82,14 @@ public class UserController {
     }
 
     @PutMapping("/updateUserName/{id}")
-    public void updateUserName(@RequestBody String firstname, String lastname, @PathVariable int id){
-        userService.updateUserName(firstname, lastname, id);
-    }
-
-    @PutMapping("/updateUserName/{id}")
     public void updateUserName(@RequestBody Map<String, String> map, @PathVariable int id){
-
         userService.updateUserName(map.get("firstName"), map.get("lastName"), id);
     }
 
     @PutMapping("/updateUserPassword/{id}")
     public void updateUserPassword(@RequestBody Map<String, String> map, @PathVariable int id){
-
         userService.updateUserPassword(map.get("password"), id);
     }
+
 
 }
