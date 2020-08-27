@@ -89,7 +89,17 @@ public class UserService {
          this.userRepository.deleteById(id);
     }
 
-
+    public User updateUserById(int id, User user, List<Role> roleList){
+        User userFound = this.userRepository.findById(id);
+        if(userFound!= null){
+            user.setId(userFound.getId());
+            user.setRoleList(roleList);
+            return this.userRepository.save(user);
+        }
+        else{
+            throw new RuntimeException("User not found.");
+        }
+    }
 
 
 }
