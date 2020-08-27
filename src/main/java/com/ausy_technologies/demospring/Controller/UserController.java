@@ -4,9 +4,13 @@ import com.ausy_technologies.demospring.Model.DAO.Role;
 import com.ausy_technologies.demospring.Model.DAO.User;
 import com.ausy_technologies.demospring.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -25,6 +29,14 @@ public class UserController {
     public User saveUser(@RequestBody User user) {
         User userAdded = this.userService.saveUser(user);
         return userAdded;
+    }
+
+    @PostMapping("/addUserEntity")
+    public ResponseEntity<User> addUsers (@RequestBody User user){
+        User newUser = this.userService.saveUser(user);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Custom-Header","addUser");
+        return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).body(newUser);
     }
 
     @PostMapping("/addUser2/{idRole}")
@@ -52,7 +64,6 @@ public class UserController {
         return  userService.findAllRoles();
     }
 
-
     @GetMapping("/findAllUsers")
     public List<User> findAllUsers()
     {
@@ -68,6 +79,23 @@ public class UserController {
     @PutMapping("/updateUserById/{id}/{roleList}")
     public User updateUserById(@RequestBody User user, @PathVariable int id, @PathVariable List<Role> roleList){
         return userService.updateUserById(id, user, roleList);
+    }
+
+    @PutMapping("/updateUserName/{id}")
+    public void updateUserName(@RequestBody String firstname, String lastname, @PathVariable int id){
+        userService.updateUserName(firstname, lastname, id);
+    }
+
+    @PutMapping("/updateUserName/{id}")
+    public void updateUserName(@RequestBody Map<String, String> map, @PathVariable int id){
+
+        userService.updateUserName(map.get("firstName"), map.get("lastName"), id);
+    }
+
+    @PutMapping("/updateUserPassword/{id}")
+    public void updateUserPassword(@RequestBody Map<String, String> map, @PathVariable int id){
+
+        userService.updateUserPassword(map.get("password"), id);
     }
 
 }
