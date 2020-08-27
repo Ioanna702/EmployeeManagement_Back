@@ -15,18 +15,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
-
     @PostMapping("/addRole")
     public Role saveRole(@RequestBody Role role) {
-
-
         Role roleAdded = this.userService.saveRole(role);
         return roleAdded;
     }
-
-
-
 
     @PostMapping("/addUser")
     public User saveUser(@RequestBody User user) {
@@ -60,7 +53,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/allUsers")
+    @GetMapping("/findAllUsers")
     public List<User> findAllUsers()
     {
         return this.userService.findAllUsers();
@@ -70,7 +63,11 @@ public class UserController {
     public void deleteUser(@PathVariable int id)
     {
         this.userService.deleteUserById(id);
+    }
 
+    @PutMapping("/updateUserById/{id}/{roleList}")
+    public User updateUserById(@RequestBody User user, @PathVariable int id, @PathVariable List<Role> roleList){
+        return userService.updateUserById(id, user, roleList);
     }
 
 }
