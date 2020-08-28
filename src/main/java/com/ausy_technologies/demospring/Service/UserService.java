@@ -8,13 +8,11 @@ import com.ausy_technologies.demospring.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.Query;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Service
 public class UserService {
@@ -32,127 +30,138 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
-    public User saveUser2(User user ,int idRole)
-    {
-       Role role= this.roleRepository.findById(idRole).get();
-
-       if(role!=null) {
-           List<Role> roleList =new ArrayList<>();
-           roleList.add(role);
-           user.setRoleList(roleList);
-           return this.userRepository.save(user);
-       }
-       else
-       {
-           throw new ErrorResponse("Rolul nu a fost gasit");
-       }
+    public User saveUser2(User user, int idRole) {
+        Role role = this.roleRepository.findById(idRole).get();
+        List<Role> roleList = new ArrayList<>();
+        roleList.add(role);
+        user.setRoleList(roleList);
+        return this.userRepository.save(user);
     }
 
-    public User saveUser3(  User user ,List<Role> roleList)
-    {
+    public User saveUser3(User user, List<Role> roleList) {
         int ok = 1;
-        for(int i = 0; i< roleList.size(); i++){
-            if(this.findRoleById(roleList.get(i).getId())!=null){
-                System.out.println(this.findRoleById(roleList.get(i).getId()));
+        for (Role r : roleList) {
+            try {
+                findRoleById(r.getId());
+            } catch (NullPointerException e) {
                 ok = 0;
-                break;
+                System.err.println("Unul din roluri nu a fost gasit.");
+                e.printStackTrace();
             }
         }
-
-        if(ok == 1){
-        user.setRoleList(roleList);
-        return this.userRepository.save(user);}
-        else{
-            throw new ErrorResponse("Cel putin un rol nu a fost gasit.");
-        }
+        if (ok == 1) {
+            user.setRoleList(roleList);
+            return this.userRepository.save(user);
+        } else
+            return null;
     }
 
-    public Role findRoleById(int id)
-    {
+    public Role findRoleById(int id) {
         return this.roleRepository.findById(id).get();
     }
 
     public User findUserById(int id) {
         User userFound = this.userRepository.findById(id);
-        if(userFound != null){
-        return this.userRepository.findById(id);}
-        else{
+        if (userFound != null) {
+            return this.userRepository.findById(id);
+        } else {
             throw new ErrorResponse("User-ul nu a fost gasit.");
         }
     }
 
-    public List<Role> findAllRoles()
-    {
+    public List<Role> findAllRoles() {
         return this.roleRepository.findAll();
     }
 
-    public List<User> findAllUsers()
-    {
+    public List<User> findAllUsers() {
         return this.userRepository.findAll();
     }
 
-    public void deleteUserById(int id)
-    {
+    public void deleteUserById(int id) {
         User userFound = this.userRepository.findById(id);
-        if(userFound != null){
-            this.userRepository.deleteById(id);}
-        else{
+        if (userFound != null) {
+            this.userRepository.deleteById(id);
+        } else {
             throw new ErrorResponse("Nu exista user cu id-ul introdus pentru a fi sters.");
         }
 
     }
 
-    public User updateUserById(int id, User user, List<Role> roleList){
+    public User updateUserById(int id, User user, List<Role> roleList) {
         User userFound = this.userRepository.findById(id);
-        if(userFound!= null){
+        if (userFound != null) {
             user.setId(id);
-            user.setRoleList(roleList);
-            return this.userRepository.save(user);
-        }
-        else{
+            int ok = 1;
+            for (Role r : roleList) {
+                try {
+                    findRoleById(r.getId());
+                } catch (NullPointerException e) {
+                    ok = 0;
+                    System.err.println("Unul din roluri nu a fost gasit.");
+                    e.printStackTrace();
+                }
+            }
+            if (ok == 1) {
+                user.setRoleList(roleList);
+                return this.userRepository.save(user);
+            } else {
+                return userFound;
+            }
+        } else {
             throw new ErrorResponse("User-ul nu a fost gasit.");
         }
     }
 
-    public void updateUserName(String firstname, String lastname, int id){
+    public void updateUserName(String firstname, String lastname, int id) {
         User userFound = this.userRepository.findById(id);
-        if(userFound!= null){
+        if (userFound != null) {
             userRepository.updateUserName(firstname, lastname, id);
-        }
-        else{
+        } else {
             throw new ErrorResponse("User-ul nu a fost gasit.");
         }
     }
 
-    public void updateUserPassword(String password, int id){
+    public void updateUserPassword(String password, int id) {
         User userFound = this.userRepository.findById(id);
-        if(userFound!= null){
+        if (userFound != null) {
             userRepository.updateUserPassword(password, id);
-        }
-        else{
+        } else {
             throw new ErrorResponse("User-ul nu a fost gasit.");
         }
 
     }
 
-    public void updateUserBirthday(LocalDate date, int id){
+    public void updateUserBirthday(LocalDate date, int id) {
         User userFound = this.userRepository.findById(id);
-        if(userFound!= null){
+        if (userFound != null) {
             userRepository.updateUserBirthday(date, id);
-        }
-        else{
+        } else {
             throw new ErrorResponse("User-ul nu a fost gasit.");
         }
     }
 
-    public User updateRoleList(List<Role> roleList, int id){
+    public User updateRoleList(List<Role> roleList, int id) {
         User userFound = this.userRepository.findById(id);
-        if(userFound!= null){
+        if (userFound != null) {
             userFound.setId(id);
-            userFound.setRoleList(roleList);
-            return this.userRepository.save(userFound);
-        }
-        else{
+            int ok = 1;
+            for (Role r : roleList) {
+                try {
+                    findRoleById(r.getId());
+                } catch (NullPointerException e) {
+                    ok = 0;
+                    System.err.println("Unul din roluri nu a fost gasit.");
+                    e.printStackTrace();
+                }
+            }
+            if (ok == 1) {
+                userFound.setRoleList(roleList);
+                return this.userRepository.save(userFound);
+            } else {
+                return userFound;
+            }
+
+        } else {
             throw new ErrorResponse("User-ul nu a fost gasit.");
         }
     }
