@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.Query;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,12 +34,10 @@ public class UserService {
     public User saveUser2(User user ,int idRole)
     {
        Role role= this.roleRepository.findById(idRole).get();
-
        List<Role> roleList =new ArrayList<>();
        roleList.add(role);
 
        if(role!=null) {
-
            user.setRoleList(roleList);
            return this.userRepository.save(user);
        }
@@ -58,6 +57,8 @@ public class UserService {
     {
         return this.roleRepository.findById(id).get();
     }
+
+    public User findUserById(int id) { return this.userRepository.findById(id);}
 
     public List<Role> findAllRoles()
     {
@@ -92,6 +93,10 @@ public class UserService {
 
     public void updateUserPassword(String password, int id){
         userRepository.updateUserPassword(password, id);
+    }
+
+    public void updateUserBirthday(LocalDate date, int id){
+        userRepository.updateUserBirthday(date, id);
     }
 
 }
