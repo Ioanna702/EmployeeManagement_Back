@@ -56,7 +56,7 @@ public class UserController {
         return new ResponseEntity<>(newUser, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/findRoleBy/{id}")
+    @GetMapping("/findRoleById/{id}")
     public ResponseEntity<Role> findRoleById(@PathVariable int id) {
         Role roleFound = this.userService.findRoleById(id);
         HttpHeaders headers = new HttpHeaders();
